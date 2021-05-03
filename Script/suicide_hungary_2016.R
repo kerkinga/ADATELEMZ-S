@@ -6,6 +6,7 @@ library(here)
 print("Adatelemzés házi feladat - Öngyilkosság és munkanélküliség kapcsolata 1990-2014-ig")
 print("Öngyilkossági adatokat tartalmazó CSV fájl beolvasása.")
 
+#TODO: File beolvasas kiszervezese fuggvenybe
 data <- read.csv(here("Data", "ongyilkossag.csv"),sep=",", header = FALSE) 
 
 print("Öngyilkossági adatokat tartalmazó CSV fájl sikeresen beolvasva.")
