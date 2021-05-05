@@ -18,12 +18,16 @@ names(data) <- c('country','year','sex','age','suicides_no','population','suicid
 
 data <- data[-c(1),]
 
-#CsoportosÃ­tÃ¡s pÃ©lda
+#Csoportosítás
 byCountriesData <- data  %>%
   group_by(country, year)  %>%
   
   summarise( suicides_no = sum(as.integer(suicides_no)), population = sum(as.integer(population)) , gdp_per_capita = mean (as.integer(`gdp_per_capita ($)`)))  %>%
   summarise(year = year, `suicides/100k pop` = suicides_no/(population/100000), gdp_per_capita = gdp_per_capita)
+
+
+# innentõl következik az a csodálatos adattisztítás, hogy ne tartalmazzon olyan országot, ahol van 0-t tartalmazó év,
+# mert ott vagy nem elég nagy a populáció, vagy hiányos az adat
 
 countriesToDrop <- ""
 countriesToDropNum <- 1
@@ -42,13 +46,11 @@ row <- 1
 
 while (row < nrow(byCountriesData)){
   
-  # print(byCountriesData[row, "country"])
-  
   if(is.na(byCountriesData[row, "country"]) ){
     break
   }
   
-  print(paste("Row", row, "Country:", byCountriesData[row, "country"], "year:", byCountriesData[row, "year"]))
+  # print(paste("Row", row, "Country:", byCountriesData[row, "country"], "year:", byCountriesData[row, "year"]))
   
   
   for (countryRowToDrop in 1:nrow(countriesToDrop)){
@@ -64,3 +66,16 @@ while (row < nrow(byCountriesData)){
   }
   row <- row +1
 }
+
+byCountriesData <- byCountriesData  %>%
+  group_by(country)  %>%
+  summarise(`suicides/100k pop` = mean(`suicides/100k pop`), gdp_per_capita = mean(gdp_per_capita))
+
+highSuicideCountries <- subset(byCountriesData, `suicides/100k pop` > 20)
+richcountries=
+
+ggplot(byCountriesData, aes(x = gdp_per_capita, y = `suicides/100k pop`)) + geom_point() +theme_bw() +
+  geom_encircle(aes(x=area, y=poptotal), data=highSuicideCountries, color="red", size=2, expand=0.08)
+
+
+
