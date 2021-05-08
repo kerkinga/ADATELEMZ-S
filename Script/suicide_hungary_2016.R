@@ -57,6 +57,25 @@ geom_line(aes(x = year, y =0.2*as.numeric(gdp_per_capita)), size = 0.5, color="r
 #geom_text(aes(label=gdp_per_capita, x=year, y=0.21*as.numeric(gdp_per_capita)), colour="black")+
  scale_y_continuous(sec.axis = sec_axis(~.*5, name = "gdp per capita"))
 
+x<- cor(hun2016ChartData$suicides_no, as.numeric(hun2016ChartData$gdp_per_capita))
+
+if(x == 0){
+  print("nincs lineáris kapcsolat")
+} else if (-0.2 < x & x < 0 | 0 < x & x <0.2) {
+  print("gyenge, majdnem hanyagolható kapcsolat")
+} else if (-0.4 < x & x <-0.2 | 0.2<x<0.4) {
+  print("biztos, de gyenge kapcsolat")
+} else if (-0.7<x & x<-0.4 | 0.4<x & x<0.7) {
+  print("közepes korreláció, jelentős kapcsolat")
+} else if (-0.9<x & x<-0.7 | 0.7<x & x<0.9) {
+  print("magas korreláció, markáns kapcsolat") 
+} else if (-1<x & x<-0.9 | 0.9<x & x<1) {
+  print("nagyon magas korreláció, erős függő kapcsolat") 
+  
+  
+  } else
+  print("Nem jó")
+
 
 
 dev.off()
