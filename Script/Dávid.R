@@ -1,0 +1,54 @@
+library("rstudioapi")                                 # Load rstudioapi package
+library(dplyr)
+library(ggplot2)
+library(here)
+library(magrittr)
+
+print("Adatelemzés házi feladat - Öngyilkosság és munkanélküliség kapcsolata 1990-2014-ig")
+print("Öngyilkossági adatokat tartalmazó CSV fájl beolvasása.")
+
+#TODO: File beolvasas kiszervezese fuggvenybe
+data <- read.csv(here("Data", "ongyilkossag.csv"),sep=",", header = FALSE) 
+
+print("Öngyilkossági adatokat tartalmazó CSV fájl sikeresen beolvasva.")
+cat("Beolvasott öngyilkossági adatok száma:", nrow(data), "darab sor")
+
+#Beolvasott adatok oszlopainak elnevezése
+names(data) <- c('country','year','sex','age','suicides_no','population','suicides/100k pop','country-year','HDI for year',' gdp_for_year ($) ','gdp_per_capita','generation')
+
+#Szûrés a magyar 2016 adatokra.
+data <- subset( data, country == "Hungary" | country == "Austria" | country == "Ukraine",  year <="2016" & year>="1991")
+#country2016Data <- subset(countryData, year <="2016" & year>="2000")
+
+countryData <- data %>% 
+  group_by(country, sex, year) %>%
+  summarise(suicides_no = sum(as.integer(suicides_no)), population = sum(as.integer(population)))%>%
+  summarise(year = year, country = country, sex = sex, suicides_no = suicides_no, population = population/1000, 'suicides/100k pop' = suicides_no/(population/1000))
+            #'suicides/100k pop' = suicides_no/(population/1000))
+
+
+#ggplot(data=countryData, aes(x=sex, y=year)) +
+ # ggtitle ("Az öngyilkosságok nemek közti megoszlása Magyarországon 1991 és 2016 között")+
+ # geom_bar(stat="identity", fill="steelblue")+
+  #geom_line(aes(x = sex, y = year), size = 0.5, color="red", group = 1)
+  
+# Stacked barplot with multiple groups
+ggplot(data=countryData, aes(x=country, y=population, fill=sex)) +
+  geom_bar(stat="identity")
+# Use position=position_dodge()
+ggplot(data=countryData, aes(x=country, y=population, fill=sex)) +
+  geom_bar(stat="identity", position=position_dodge())
+
+# Stacked barplot with multiple groups
+ggplot(data=countryData, aes(x=country, y=suicides_no, fill=sex)) +
+  geom_bar(stat="identity")
+# Use position=position_dodge()
+ggplot(data=countryData, aes(x=country, y=suicides_no, fill=sex)) +
+  geom_bar(stat="identity", position=position_dodge())
+
+#ggplot(data=hun2016ChartData, aes(x=year, y=suicides_no), ) +
+ # geom_bar(stat="identity", fill="steelblue") +
+  #geom_text(aes(label=suicides_no), vjust=-0.3, size=3.5)+
+  #geom_line(aes(x = year, y =0.2*as.numeric(gdp_per_capita)), size = 0.5, color="red", group = 1)+
+  #geom_text(aes(label=gdp_per_capita, x=year, y=0.21*as.numeric(gdp_per_capita)), colour="black")+
+  #scale_y_continuous(sec.axis = sec_axis(~.*5, name = "gdp per capita"))

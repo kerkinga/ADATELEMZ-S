@@ -23,7 +23,7 @@ byCountriesData <- data  %>%
   group_by(country, year)  %>%
   
   summarise( suicides_no = sum(as.integer(suicides_no)), population = sum(as.integer(population)) , gdp_per_capita = mean (as.integer(`gdp_per_capita ($)`)))  %>%
-  summarise(year = year, `suicides/100k pop` = suicides_no/(population/100000), gdp_per_capita = gdp_per_capita)
+  summarise(year = year, 'suicides/100k pop' = suicides_no/(population/100000), gdp_per_capita = gdp_per_capita)
 
 
 # innentõl következik az a csodálatos adattisztítás, hogy ne tartalmazzon olyan országot, ahol van 0-t tartalmazó év,
@@ -68,18 +68,18 @@ while (row < nrow(byCountriesData)){
 }
 
 richCountries <- subset(byCountriesData, gdp_per_capita > 45000)
-highSuicideCountries <- subset(byCountriesData, `suicides/100k pop` > 28)
+highSuicideCountries <- subset(byCountriesData, 'suicides/100k pop' > 28)
 
 
 byCountriesData <- byCountriesData  %>%
   group_by(country)  %>%
-  summarise(`suicides/100k pop` = mean(`suicides/100k pop`), gdp_per_capita = mean(gdp_per_capita))
+  summarise('suicides/100k pop' = mean(`suicides/100k pop`), gdp_per_capita = mean(gdp_per_capita))
 
-ggplot(byCountriesData, aes(x = gdp_per_capita, y = `suicides/100k pop`)) + geom_point() +theme_bw() + geom_smooth(method="loess", se=FALSE) +
-  geom_encircle(aes(x = gdp_per_capita, y = `suicides/100k pop`), data=highSuicideCountries, color="red", size=3) + 
-  geom_encircle(aes(x = gdp_per_capita, y = `suicides/100k pop`), data=richCountries, color="green", size=3)
+ggplot(byCountriesData, aes(x = gdp_per_capita, y = 'suicides/100k pop')) + geom_point() +theme_bw() + geom_smooth(method="loess", se=FALSE) +
+  geom_encircle(aes(x = gdp_per_capita, y = 'suicides/100k pop'), data=highSuicideCountries, color="red", size=3) + 
+  geom_encircle(aes(x = gdp_per_capita, y = 'suicides/100k pop'), data=richCountries, color="green", size=3)
 
-ggplot(byCountriesData, aes(x = gdp_per_capita, y = `suicides/100k pop`))+
+ggplot(byCountriesData, aes(x = gdp_per_capita, y = 'suicides/100k pop'))+
   stat_density_2d(aes(fill = ..count..), geom = "raster", contour = FALSE)+
   scale_fill_distiller(palette= "Spectral", direction=-1) +
   geom_point() +theme_bw() + geom_smooth(method="loess", se=FALSE)
