@@ -6,7 +6,7 @@ library(magrittr)
 
 
 
-print("Adatelemzés házi feladat - Öngyilkosság és Egyfőre jutó GDP kapcsolata 1991-2016-ig")
+print("Adatelemzés házi feladat - Öngyilkosság és Egy főre jutó GDP kapcsolata 1991-2016-ig")
 print("Öngyilkossági adatokat tartalmazó CSV fájl beolvasása.")
 
 #TODO: File beolvasas kiszervezese fuggvenybe
@@ -28,13 +28,8 @@ hun2016ChartData <- hunData %>%
   group_by(year, gdp_per_capita) %>% 
   summarise(suicides_no = sum(as.integer(suicides_no)))
 
-hunCor <-hunData %>%
-  group_by(year, gdp_per_capita) %>% 
-  summarise(suicides_no = sum(as.integer(suicides_no)))
-  
-  
 
-#Ábra képfájl elnevezése
+  #Ábra képfájl elnevezése
 png(file = here("Output/Chart", "SuicideHungary1991-2016withGDPpercapita.png"))
 
 
@@ -43,7 +38,7 @@ ggplot(data=hun2016ChartData, aes(x=year, y=suicides_no), ) +
   geom_col(width = 0.5) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   #scale_x_discrete(guide = guide_axis(check.overlap = TRUE)) +
-geom_bar(stat="identity", fill="steelblue") +
+geom_bar(stat="identity", fill="lightblue") +
 geom_text(aes(label=suicides_no), vjust=0.1, size=3.2, angle=45, hjust = 0)+ 
    
 geom_line(aes(x = year, y =0.2*as.numeric(gdp_per_capita)), size = 0.5, color="red", group = 1)+

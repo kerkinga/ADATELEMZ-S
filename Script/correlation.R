@@ -27,7 +27,7 @@ hunCor <-hunData %>%
   summarise(suicides_no = sum(as.integer(suicides_no)))
 
 # Pearson korreláció számolás
-x<- cor(hun2016ChartData$suicides_no, as.numeric(hun2016ChartData$gdp_per_capita))
+x<- cor(hunCor$suicides_no, as.numeric(hunCor$gdp_per_capita))
 
 print(paste("Korreláció: ", x))
 
@@ -53,10 +53,10 @@ png(file = here("Output/Chart", "CorrelationBetweenSuicideNoAndGDPPerCapita.png"
 
 #Scatterplot
 
-plot(suicides_no,gdp_per_capita , main="Korreláció az öngyilkosságok száma és az egyfőre jutó GDP között ",
+plot(hunCor$suicides_no, hunCor$gdp_per_capita , main="Korreláció az öngyilkosságok száma és az egyfőre jutó GDP között ",
      xlab="Öngyilkosságok száma évente (fő)", ylab="Egyfőre jutó GDP ($) ", pch=19)
 # Add fit lines
-abline(lm(gdp_per_capita~suicides_no), col="red") # regression line (y~x)
-lines(lowess(suicides_no,gdp_per_capita), col="blue") # lowess line (x,y)
+abline(lm(hunCor$gdp_per_capita~hunCor$suicides_no), col="red") # regression line (y~x)
+lines(lowess(hunCor$suicides_no,hunCor$gdp_per_capita), col="blue") # lowess line (x,y)
 
 dev.off()
