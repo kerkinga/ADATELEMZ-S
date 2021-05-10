@@ -1,6 +1,7 @@
 library("rstudioapi")                                 # Load rstudioapi package
 library(dplyr)
 library(ggplot2)
+library(ggalt)
 library(here)
 
 
@@ -50,8 +51,6 @@ while (row < nrow(byCountriesData)){
     break
   }
   
-  # print(paste("Row", row, "Country:", byCountriesData[row, "country"], "year:", byCountriesData[row, "year"]))
-  
   
   for (countryRowToDrop in 1:nrow(countriesToDrop)){
     
@@ -67,13 +66,17 @@ while (row < nrow(byCountriesData)){
   row <- row +1
 }
 
-richCountries <- subset(byCountriesData, gdp_per_capita > 45000)
-highSuicideCountries <- subset(byCountriesData, `suicides/100k pop` > 28)
-
 
 byCountriesData <- byCountriesData  %>%
   group_by(country)  %>%
   summarise(`suicides/100k pop` = mean(`suicides/100k pop`), gdp_per_capita = mean(gdp_per_capita))
+
+# korrelációt számolunk
+x<- cor(byCountriesData$`suicides/100k pop`, as.numeric(byCountriesData$gdp_per_capita))
+
+# kiemeljük a kifejezetten magas öngyilkossági rátával, és a kifejezten magas egy fõre jutó gdp-vel rendelkezõ orszgokat
+richCountries <- subset(byCountriesData, gdp_per_capita > 45000)
+highSuicideCountries <- subset(byCountriesData, `suicides/100k pop` > 28)
 
 ggplot(byCountriesData, aes(x = gdp_per_capita, y = `suicides/100k pop`)) + geom_point() +theme_bw() + geom_smooth(method="loess", se=FALSE) +
   geom_encircle(aes(x = gdp_per_capita, y = `suicides/100k pop`), data=highSuicideCountries, color="red", size=3) + 
